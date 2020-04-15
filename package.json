@@ -20,6 +20,9 @@
     "angular-jsdoc": "^1.5.1",
     "angular-mocks": "^1.7.8",
     "autoprefixer": "^9.6.5",
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
+    "babelify": "^10.0.0",
     "browserify-ngannotate": "^2.0.0",
     "bundlesize": "^0.18.0",
     "chai": "^4.2.0",
@@ -83,7 +86,7 @@
   "bundlesize": [
     {
       "path": "./build/ddocs/medic/_attachments/js/inbox.js",
-      "maxSize": "820 kB"
+      "maxSize": "840 kB"
     },
     {
       "path": "./build/ddocs/medic/_attachments/js/templates.js",

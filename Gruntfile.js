@@ -160,10 +160,22 @@ module.exports = function(grunt) {
           detectGlobals: false,
         },
         options: {
-          transform: ['browserify-ngannotate'],
+          transform: [
+            ['babelify', {
+              presets: [['@babel/preset-env', {
+                targets: { esmodules: true },
+                exclude: ['babel-plugin-transform-classes']
+              }]],
+              global: true,
+              compact: false,
+              only: [/^.*\/node_modules\/enketo-core\/.*$/]
+            }],
+            'browserify-ngannotate'
+          ],
           alias: {
             'enketo-config': './webapp/src/js/enketo/config.json',
-            'widgets': './webapp/src/js/enketo/widgets',
+            'enketo/widgets': './webapp/src/js/enketo/widgets',
+            'enketo/file-manager': './webapp/src/js/enketo/file-manager',
             './xpath-evaluator-binding': './webapp/src/js/enketo/OpenrosaXpathEvaluatorBinding',
             'extended-xpath': './webapp/node_modules/openrosa-xpath-evaluator/src/extended-xpath',
             'openrosa-xpath-extensions': './webapp/node_modules/openrosa-xpath-evaluator/src/openrosa-xpath-extensions',
@@ -345,7 +357,6 @@ module.exports = function(grunt) {
         cwd: 'webapp/node_modules',
         src: [
           'bootstrap-daterangepicker/**',
-          'enketo-core/**',
           'font-awesome/**',
           'messageformat/**',
           'moment/**'
@@ -531,7 +542,6 @@ module.exports = function(grunt) {
         cmd: function() {
           const modulesToPatch = [
             'bootstrap-daterangepicker',
-            'enketo-core',
             'font-awesome',
             'moment',
           ];
@@ -608,13 +618,6 @@ module.exports = function(grunt) {
 
             // patch moment.js to use western arabic (european) numerals in Hindi
             'patch webapp/node_modules/moment/locale/hi.js < webapp/patches/moment-hindi-use-euro-numerals.patch',
-
-            // patch enketo to always mark the /inputs group as relevant
-            'patch webapp/node_modules/enketo-core/src/js/Form.js < webapp/patches/enketo-inputs-always-relevant.patch',
-
-            // patch enketo so forms with no active pages are considered valid
-            // https://github.com/medic/medic/issues/5484
-            'patch webapp/node_modules/enketo-core/src/js/page.js < webapp/patches/enketo-handle-no-active-pages.patch',
 
             // patch messageformat to add a default plural function for languages not yet supported by make-plural #5705
             'patch webapp/node_modules/messageformat/lib/plurals.js < webapp/patches/messageformat-default-plurals.patch',
@@ -1154,5 +1157,3 @@ module.exports = function(grunt) {
     'jsdoc'
   ]);
 };
-
-

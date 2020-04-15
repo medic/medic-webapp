@@ -104,7 +104,7 @@ describe('Service worker cache', () => {
       // no part of syncing is cached
       await expectCachedState(false, '/dbinfo', { 'Accept': 'application/json' });
       await expectCachedState(false, '/medic/_changes?style=all_docs&limit=100');
-      
+
       // confirm no additional requests were added into the cache
       const { urls: resultingCachedUrls } = await getCachedRequests();
       expect(resultingCachedUrls).to.deep.eq(initialCachedUrls);
