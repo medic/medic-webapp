@@ -141,7 +141,7 @@ describe('muting', () => {
         unmute_forms: ['unmute'],
         messages: [{
           event_type: 'contact_not_found',
-          recipient: '12345',
+          recipient: 'reporting_unit',
           message: [{
             locale: 'en',
             content: 'Contact not found'
@@ -240,28 +240,28 @@ describe('muting', () => {
         unmute_forms: ['unmute'],
         messages: [{
           event_type: 'mute',
-          recipient: '12345',
+          recipient: 'reporting_unit',
           message: [{
             locale: 'en',
             content: 'Contact muted'
           }],
         }, {
           event_type: 'unmute',
-          recipient: '12345',
+          recipient: 'reporting_unit',
           message: [{
             locale: 'en',
             content: 'Contact unmuted'
           }],
         }, {
           event_type: 'already_muted',
-          recipient: '12345',
+          recipient: 'reporting_unit',
           message: [{
             locale: 'en',
             content: 'Contact already muted'
           }],
         }, {
           event_type: 'already_unmuted',
-          recipient: '12345',
+          recipient: 'reporting_unit',
           message: [{
             locale: 'en',
             content: 'Contact already unmuted'

@@ -1157,5 +1157,3 @@ module.exports = function(grunt) {
     'jsdoc'
   ]);
 };
-
-

@@ -73,7 +73,16 @@ const updateSettings = updates => {
       // Make sure all updated fields are present in originalSettings, to enable reverting later.
       Object.keys(updates).forEach(updatedField => {
         if (!_.has(originalSettings, updatedField)) {
-          originalSettings[updatedField] = null;
+          const field_type = updates[updatedField].constructor.name;
+          if (field_type === 'Array') {
+            originalSettings[updatedField] = [];
+          } else if (field_type === 'Object') {
+            originalSettings[updatedField] = {};
+          } else if (field_type === 'Number') {
+            originalSettings[updatedField] = 0;
+          } else {
+            originalSettings[updatedField] = '';
+          }
         }
       });
       return;

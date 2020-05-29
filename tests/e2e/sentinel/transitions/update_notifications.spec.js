@@ -113,7 +113,7 @@ describe('update_notifications', () => {
         off_form: 'off',
         messages: [{
           event_type: 'patient_not_found',
-          recipient: '12345',
+          recipient: 'reporting_unit',
           message: [{
             locale: 'en',
             content: 'Patient not found'
@@ -203,14 +203,14 @@ describe('update_notifications', () => {
         off_form: 'off',
         messages: [{
           event_type: 'on_mute',
-          recipient: '12345',
+          recipient: 'reporting_unit',
           message: [{
             locale: 'en',
             content: 'Contact muted'
           }],
         }, {
           event_type: 'on_unmute',
-          recipient: '12345',
+          recipient: 'reporting_unit',
           message: [{
             locale: 'en',
             content: 'Contact unmuted'
@@ -223,6 +223,7 @@ describe('update_notifications', () => {
       _id: uuid(),
       type: 'data_record',
       form: 'off',
+      from: '1234567',
       fields: {
         patient_id: 'person'
       },
@@ -234,6 +235,7 @@ describe('update_notifications', () => {
       _id: uuid(),
       type: 'data_record',
       form: 'off',
+      from: '54321',
       fields: {
         patient_id: 'person'
       },
@@ -245,6 +247,7 @@ describe('update_notifications', () => {
       _id: uuid(),
       type: 'data_record',
       form: 'on',
+      from: '56789',
       fields: {
         patient_id: 'person'
       },
@@ -256,6 +259,7 @@ describe('update_notifications', () => {
       _id: uuid(),
       type: 'data_record',
       form: 'on',
+      from: '12345',
       fields: {
         patient_id: 'person'
       },
@@ -289,7 +293,7 @@ describe('update_notifications', () => {
         expect(updated[0].tasks).toBeDefined();
         expect(updated[0].tasks.length).toEqual(1);
         expect(updated[0].tasks[0].messages[0].message).toEqual('Contact muted');
-        expect(updated[0].tasks[0].messages[0].to).toEqual('12345');
+        expect(updated[0].tasks[0].messages[0].to).toEqual('1234567');
 
         expect(updated[1].muted).toEqual(muteTime);
 
@@ -314,7 +318,7 @@ describe('update_notifications', () => {
         expect(updated[0].tasks).toBeDefined();
         expect(updated[0].tasks.length).toEqual(1);
         expect(updated[0].tasks[0].messages[0].message).toEqual('Contact muted');
-        expect(updated[0].tasks[0].messages[0].to).toEqual('12345');
+        expect(updated[0].tasks[0].messages[0].to).toEqual('54321');
 
         expect(updated[1].muted).toEqual(muteTime);
 
@@ -339,7 +343,7 @@ describe('update_notifications', () => {
         expect(updated[0].tasks).toBeDefined();
         expect(updated[0].tasks.length).toEqual(1);
         expect(updated[0].tasks[0].messages[0].message).toEqual('Contact unmuted');
-        expect(updated[0].tasks[0].messages[0].to).toEqual('12345');
+        expect(updated[0].tasks[0].messages[0].to).toEqual('56789');
 
         expect(updated[1].muted).not.toBeDefined();
       })
