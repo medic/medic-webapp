@@ -1,0 +1,10 @@
+{
+  "title": "Immunization and growth follow up",
+  "icon": "icon-people-children",
+  "context": {
+    "person": true,
+    "place": false,
+    "expression": "contact.type === 'person' && summary.alive && (!contact.date_of_birth ||  ageInYears(contact) < 5)"
+  }
+}
+

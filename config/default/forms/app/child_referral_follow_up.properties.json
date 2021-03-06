@@ -1,0 +1,10 @@
+{
+  "title": "Child referral follow up",
+  "icon": "icon-followup-general",
+  "context": {
+    "person": true,
+    "place": false,
+    "expression": "contact.type === 'person' && summary.alive && (!contact.date_of_birth ||  ageInYears(contact) < 5)"
+  }
+}
+

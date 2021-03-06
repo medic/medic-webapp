@@ -7,6 +7,8 @@ const {
   getNewestDeliveryTimestamp,
   isAlive,
   isFormArraySubmittedInWindow,
+  isFormArraySubmittedInWindowExcludingThisReport,
+  isFormArraySubmittedInWindowAfterThisReport,
   getDateISOLocal,
   getTimeForMidnight,
   isDeliveryForm,
@@ -48,7 +50,364 @@ function checkTaskResolvedForHomeVisit(contact, report, event, dueDate) {
   return isFormArraySubmittedInWindow(contact.reports, ['pregnancy_home_visit'], startTime, endTime);
 }
 
+// todo - verify events.ID nomenclature
 module.exports = [
+
+  // MNCH Immunization and Growth follow up 3 days
+  {
+    name: 'immunization_growth_follow_up_missed_vaccine_date_3',
+    icon: 'icon-people-children',
+    title: 'Immunization Growth Follow Up',
+    appliesTo: 'reports',
+    appliesToType: ['immunization_and_growth'],
+    actions: [{type: 'report',form: 'immunization_and_growth'}],
+    appliesIf: function(contact, report) {
+      // Trigger a immunization follow up form 3 days from the selected date
+      return parseInt(getField(report, 'g_missed_vaccine_details.missed_vaccine_date'))  > 0;
+    },
+    events: [
+      {
+        id: 'immunization_growth_follow_up_is_set_missed_vaccine_date_3',
+        dueDate: function (event, contact, report) {
+          return getDateISOLocal(getField(report, 'g_missed_vaccine_details.missed_vaccine_date'));
+        },
+        start: 3, end: 3
+      }
+    ],
+    resolvedIf: function(contact, report, event, dueDate) {
+      return isFormArraySubmittedInWindow(
+        contact.reports,
+        ['immunization_and_growth'],
+        Math.max(addDays(dueDate, -event.start).getTime(), report.reported_date),
+        addDays(dueDate, event.end + 1).getTime()
+      );
+    }
+  },
+
+  // MNCH Immunization and Growth follow up deworm_next_date 3 days
+  {
+    name: 'immunization_growth_follow_up_deworm_next_date_3',
+    icon: 'icon-people-children',
+    title: 'Immunization Growth Follow Up',
+    appliesTo: 'reports',
+    appliesToType: ['immunization_and_growth'],
+    actions: [{type: 'report',form: 'immunization_and_growth'}],
+    appliesIf: function(contact, report) {
+      // Trigger a immunization follow up form 3 days from the selected date
+      // todo - remove this debug
+      console.log('g_deworming.deworm_next_date', getField(report, 'g_deworming.deworm_next_date'));
+      return parseInt(getField(report, 'g_deworming.deworm_next_date'))  > 0;
+    },
+    events: [
+      {
+        id: 'immunization_growth_follow_up_is_set_deworm_next_date_3',
+        dueDate: function (event, contact, report) {
+          return getDateISOLocal(getField(report, 'g_deworming.deworm_next_date'));
+        },
+        start: 3, end: 3
+      }
+    ],
+    resolvedIf: function(contact, report, event, dueDate) {
+      return isFormArraySubmittedInWindow(
+        contact.reports,
+        ['immunization_and_growth'],
+        Math.max(addDays(dueDate, -event.start).getTime(), report.reported_date),
+        addDays(dueDate, event.end + 1).getTime()
+      );
+    }
+  },
+
+  // MNCH Immunization and Growth follow up next_appointment_date 3 days
+  {
+    name: 'immunization_growth_follow_up_next_appointment_date_3',
+    icon: 'icon-people-children',
+    title: 'Immunization Growth Follow Up',
+    appliesTo: 'reports',
+    appliesToType: ['immunization_and_growth'],
+    actions: [{type: 'report',form: 'immunization_and_growth'}],
+    appliesIf: function(contact, report) {
+      // Trigger a immunization follow up form 3 days from the selected date
+      // todo - remove this debug
+      if (parseInt(getField(report, 'g_next_appointment.next_appointment_date'))  > 0){
+        console.log('YES patient_id', getField(report, 'patient_id' ));
+        console.log('YES g_next_appointment.next_appointment_date', getField(report, 'g_next_appointment.next_appointment_date'));
+        return true;
+      } else {
+        console.log('NO g_next_appointment.next_appointment_date', getField(report, 'g_next_appointment.next_appointment_date'));
+        return false;
+      }
+    },
+    events: [
+      {
+        id: 'immunization_growth_follow_up_is_set_next_appointment_date_3',
+        dueDate: function (event, contact, report) {
+          return getDateISOLocal(getField(report, 'g_next_appointment.next_appointment_date'));
+        },
+        start: 31, end: 30
+      }
+    ],
+    resolvedIf: function(contact, report, event, dueDate) {
+      return isFormArraySubmittedInWindowExcludingThisReport(
+        contact.reports,
+        ['immunization_and_growth'],
+        Math.max(addDays(dueDate, -event.start).getTime(), report.reported_date),
+        addDays(dueDate, event.end + 1).getTime(),
+        report
+      );
+    }
+  },
+
+  // MNCH Immunization and Growth child_development_follow_up - developmental_milestones 7 days
+  {
+    name: 'immunization_growth_follow_up_developmental_milestones',
+    icon: 'icon-child-growth',
+    title: 'Child Development Follow Up',
+    appliesTo: 'reports',
+    appliesToType: ['immunization_and_growth'],
+    actions: [{type: 'report',form: 'child_development_follow_up'}],
+    appliesIf: function(contact, report) {
+      // Trigger a child development referral follow up task 7days from the  selected date. The task should stay for 3 more days
+      return parseInt(getField(report, 'g_developmental_milestones.developmental_next_assignment_date'))  > 0;
+    },
+    events: [
+      {
+        id: 'immunization_growth_follow_up_is_set_developmental_milestones_7',
+        dueDate: function (event, contact, report) {
+          return getDateISOLocal(getField(report, 'g_developmental_milestones.developmental_apt_date'));
+        },
+        start: 3, end: 3
+      }
+    ],
+    resolvedIf: function(contact, report, event, dueDate) {
+      const startTime = Math.max(addDays(dueDate, -event.start).getTime(), report.reported_date);
+      const endTime = addDays(dueDate, event.end + 1).getTime();
+      return isFormArraySubmittedInWindow(
+        contact.reports, ['child_development_follow_up'], startTime, endTime
+      );
+    }
+  },
+
+  // MNCH Immunization and Growth follow up child_referral_follow_up 1 day
+  {
+    name: 'immunization_growth_any_danger',
+    icon: 'icon-followup-general',
+    title: 'Child referral follow up',
+    appliesTo: 'reports',
+    appliesToType: ['immunization_and_growth'],
+    actions: [{type: 'report',form: 'child_referral_follow_up'}],
+    appliesIf: function(contact, report) {
+      // If any danger sign marked triggers an "Child referral follow up" form that shows up the next day of the reported day
+      return getField(report, 'any_danger') === 'yes';
+    },
+    events: [
+      {
+        id: 'immunization_growth_any_danger',
+        days: 1, start: 1, end: 3
+      }
+    ],
+    resolvedIf: function(contact, report, event, dueDate) {
+      const startTime = Math.max(addDays(dueDate, -event.start).getTime(), report.reported_date);
+      const endTime = addDays(dueDate, event.end + 1).getTime();
+      return isFormArraySubmittedInWindow(
+        contact.reports, ['child_referral_follow_up'], startTime, endTime
+      );
+    }
+  },
+
+  // // MNCH Child assessment 
+  // {
+  //   name: 'child_treatment_follow_up_3day',
+  // },
+
+  // // MNCH Child assessment 
+  // {
+  //   name: 'child_treatment_follow_up_3day',
+  // },
+
+  // MNCH Child assessment child_referral_follow_up_0day
+  {
+    name: 'child_referral_follow_up_0day_TEST',
+    icon: 'icon-followup-general',
+    title: 'Child referral follow up',
+    appliesTo: 'reports',
+    appliesToType: ['child_assessment'],
+    actions: [{type: 'report',form: 'child_assessment'}],
+    appliesIf: function(contact, report) {
+      if( getField(report, 'any_danger') === 'yes' ) {
+        console.log('child_referral_follow_up_0day_TEST task');
+        return true;
+      } else {
+        return false;
+      }
+    },
+    events: [
+      {
+        id: 'child_referral_follow_up_0day_TEST',
+        days: 0, start: 3, end: 3
+      }
+    ],
+    resolvedIf: function(contact, report, event, dueDate) {
+      const startTime = Math.max(addDays(dueDate, -event.start).getTime(), report.reported_date);
+      const endTime = addDays(dueDate, event.end + 1).getTime();
+      return isFormArraySubmittedInWindowAfterThisReport(
+        contact.reports, ['child_assessment'], startTime, endTime, report
+      );
+    }
+  },
+
+  // MNCH Child assessment child_referral_follow_up_3day
+  {
+    name: 'child_referral_follow_up_3day',
+    icon: 'icon-followup-general',
+    title: 'Child referral follow up',
+    appliesTo: 'reports',
+    appliesToType: ['child_assessment'],
+    actions: [{type: 'report',form: 'child_referral_follow_up'}],
+    appliesIf: function(contact, report) {
+      if(
+        getField(report, 'g_two_mo_assessment.two_mo_referred') === 'yes' ||
+        getField(report, 'danger_signs_without_fever') === 'yes' ||
+        getField(report, 'g_malaria.malaria_fever_length') >= 7 ||
+        getField(report, 'g_malaria.malaria_results') === 'not_done' ||
+        getField(report, 'receive_malaria_treatment') === 'yes' ||
+        getField(report, 'receive_fever_treatment') === 'yes' ||
+        getField(report, 'g_cough.cough_time') >= 14 ||
+        getField(report, 'fast_breathing_child') === 'yes' ||
+        getField(report, 'fast_breathing_person') === 'yes' ||
+        getField(report, 'g_diarrhea.diarrhea_last') >= 14 ||
+        getField(report, 'g_diarrhea.diarrhea_blood') === 'yes'  ||
+        (
+          getField(report, 'g_diarrhea.diarrhea_last') < 14 &&
+          getField(report, 'g_diarrhea.diarrhea_blood') === 'no'
+        ) ||
+        getField(report, 'g_malnutrition.malnutrition_muac_color') === 'red' ||
+        getField(report, 'g_malnutrition.malnutrition_muac_color') === 'yellow' ||
+        getField(report, 'g_malnutrition.malnutrition_swollen_feet') === 'yes'
+      ) {
+        // Mark as referral for danger signs of newborns, Go to summary page & end form. Triggers a chi referral
+        // follow up that starts in 3 days and stays for 3 days
+
+        // Trigger a child referral follow up that starts in 3 days and stays for 3 days danger_signs_without_fever
+
+        // If fever for 7 days or more--mark it as danger sign  for Urgent Referral.
+        // Trigger a child referral follow up that starts in 3 days and stays for 3 days
+
+        // Rapid Malaria Tests Results - if "Not done" - Capture as danger sign for referral
+        // Trigger a child referral follow up that starts in 3 days and stays for 3 days
+
+        // Trigger: If fever for less than 7 days AND RDT results-Positive trigger a
+        // child treatment follow up that show up in 3 and 6 days. the tasks should stay for 3 days
+
+        // Trigger: If fever for less than 7 days AND RDT-Negative/Not done trigger a child treatment
+        // follow up that show up in 3 and 6 days. the tasks should stay for 3 days
+
+        // Have you referred ${patient_name} for malaria test? Refer child to a health facility for malaria test
+        // Trigger a child referral follow up that starts in 3 days and stays for 3 days
+
+        // How long has this cough lasted? If 14 days or more---mark it as a danger sign for Urgent Referral
+        // Trigger a child referral follow up that starts in 3 days and stays for 3 days
+
+        // How many breaths per minute? if   integer => 50bpm and age is 2 to 12months If yes--mark it as danger
+        // sign  for Urgent Referral.
+        // if  integer =>40bpm and age is >12months upto 5 years If yes--mark it as danger sign  for Urgent Referral.
+        // if integer>24bpm and age is more than 5 years
+
+        // How long has the diarrhea lasted? If  14 days or more--mark it as danger sign  for Urgent Referral
+        // Trigger a child referral follow up that starts in 3 days and stays for 3 days
+
+        // Is there blood in the diarrhea? If yes--mark it as danger sign  for Urgent Referral.
+        // Trigger a child referral follow up that starts in 3 days and stays for 3 days
+
+        // If diarrhea for less than14 days AND No blood in diarrhea trigger a child treatment follow
+        // up that show up in 3 and 6 days. the tasks should stay for 3 days
+
+        // If red MUAC trigger a malnutrition referral follow up that starts in 3 days and stays for 3 days
+
+        // If yellow MUAC trigger a child treatment follow up that show up in 3 and 6 days. the tasks should stay for 3 days
+
+        // Swelling of both feet of the child? If yes--mark it as danger sign  for Urgent Referral.
+        // Trigger a child referral follow up that starts in 3 days and stays for 3 days
+        console.log('child_referral_follow_up_3day task');
+        return true;
+      } else {
+        return false;
+      }
+    },
+    events: [
+      {
+        id: 'child_referral_follow_up_3day',
+        days: 3, start: 3, end: 3
+      }
+    ],
+    resolvedIf: function(contact, report, event, dueDate) {
+      const startTime = Math.max(addDays(dueDate, -event.start).getTime(), report.reported_date);
+      const endTime = addDays(dueDate, event.end + 1).getTime();
+      return isFormArraySubmittedInWindow(
+        contact.reports, ['child_referral_follow_up'], startTime, endTime
+      );
+    }
+  },
+
+  // MNCH Child assessment child_referral_follow_up_6day
+  {
+    name: 'child_referral_follow_up_6day',
+    icon: 'icon-followup-general',
+    title: 'Child referral follow up',
+    appliesTo: 'reports',
+    appliesToType: ['child_assessment'],
+    actions: [{type: 'report',form: 'child_referral_follow_up'}],
+    appliesIf: function(contact, report) {
+      if(
+        getField(report, 'receive_malaria_treatment') === 'yes' ||
+        getField(report, 'receive_fever_treatment') === 'yes' ||
+        getField(report, 'g_cough.cough_time') < 14 ||
+        (
+          getField(report, 'fast_breathing_person')  === 'yes'  &&
+          getField(report, 'g_cough.cough_time')  < 14
+        ) ||
+        (
+          getField(report, 'g_diarrhea.diarrhea_last') < 14 &&
+          getField(report, 'g_diarrhea.diarrhea_blood') === 'no'
+        ) ||
+        getField(report, 'g_malnutrition.malnutrition_muac_color') === 'yellow'
+      ) {
+        // Trigger: If fever for less than 7 days AND RDT results-Positive trigger a
+        // child treatment follow up that show up in 3 and 6 days. the tasks should stay for 3 days
+
+        // Trigger: If fever for less than 7 days AND RDT-Negative/Not done trigger a child treatment
+        // follow up that show up in 3 and 6 days. the tasks should stay for 3 days
+
+        // How long has this cough lasted? If cough less than 14 days trigger a child treatment follow up that
+        // show up in 3 and 6 days. the tasks should stay for 3 days
+
+        // If cough for less than 14 days AND Fast Breathing trigger a child treatment follow up that show up in 3
+        // and 6 days. the tasks should stay for 3 days
+
+        // If diarrhea for less than14 days AND No blood in diarrhea trigger a child treatment follow up that show up
+        // in 3 and 6 days. the tasks should stay for 3 days
+
+        // If yellow MUAC trigger a child treatment follow up that show up in 3 and 6 days. the tasks should
+        // stay for 3 days
+        console.log('child_referral_follow_up_6day task');
+        return true;
+      } else {
+        return false;
+      }
+    },
+    events: [
+      {
+        id: 'child_referral_follow_up_6day',
+        days: 6, start: 3, end: 3 // todo - this doesn't show up in "2 weeks" which I think it should...
+      }
+    ],
+    resolvedIf: function(contact, report, event, dueDate) {
+      const startTime = Math.max(addDays(dueDate, -event.start).getTime(), report.reported_date);
+      const endTime = addDays(dueDate, event.end + 1).getTime();
+      return isFormArraySubmittedInWindow(
+        contact.reports, ['child_referral_follow_up'], startTime, endTime
+      );
+    }
+  },
 
   //ANC Home Visit: 12, 20, 26, 30, 34, 36, 38, 40 weeks (Known LMP)
   {
@@ -122,7 +481,7 @@ module.exports = [
     },
 
     resolvedIf: function (contact, report, event, dueDate) {
-      //(refused or migrated) and cleared tasks 
+      //(refused or migrated) and cleared tasks
       if (isPregnancyTaskMuted(contact)) { return true; }
       const startTime = Math.max(addDays(dueDate, -event.start).getTime(), report.reported_date);
       const endTime = addDays(dueDate, event.end + 1).getTime();
@@ -159,7 +518,7 @@ module.exports = [
       return getField(report, 't_danger_signs_referral_follow_up') === 'yes' && isAlive(contact);
     },
     resolvedIf: function (contact, report, event, dueDate) {
-      //(refused or migrated) and cleared tasks 
+      //(refused or migrated) and cleared tasks
       if (isPregnancyTaskMuted(contact)) { return true; }
       const startTime = Math.max(addDays(dueDate, -event.start).getTime(), report.reported_date + 1);
       const endTime = addDays(dueDate, event.end + 1).getTime();
@@ -198,7 +557,7 @@ module.exports = [
       //miscarriage or abortion
       if (getRecentANCVisitWithEvent(contact, report, 'abortion') || getRecentANCVisitWithEvent(contact, report, 'miscarriage')) { return true; }
 
-      //(refused or migrated) and cleared tasks 
+      //(refused or migrated) and cleared tasks
       if (isPregnancyTaskMuted(contact)) { return true; }
       const startTime = Math.max(addDays(dueDate, -event.start).getTime(), report.reported_date);
       const endTime = addDays(dueDate, event.end + 1).getTime();
@@ -232,7 +591,7 @@ module.exports = [
       return getField(report, 't_danger_signs_referral_follow_up') === 'yes' && isAlive(contact);
     },
     resolvedIf: function (contact, report, event, dueDate) {
-      //(refused or migrated) and cleared tasks 
+      //(refused or migrated) and cleared tasks
       if (isPregnancyTaskMuted(contact)) { return true; }
       const startTime = Math.max(addDays(dueDate, -event.start).getTime(), report.reported_date + 1);//+1 so that source ds_follow_up does not resolve itself;
       const endTime = addDays(dueDate, event.end + 1).getTime();
@@ -311,7 +670,7 @@ module.exports = [
       return getField(report, 't_danger_signs_referral_follow_up') === 'yes' && isAlive(contact);
     },
     resolvedIf: function (contact, report, event, dueDate) {
-      //(refused or migrated) and cleared tasks 
+      //(refused or migrated) and cleared tasks
       if (isPregnancyTaskMuted(contact)) { return true; }
       const startTime = Math.max(addDays(dueDate, -event.start).getTime(), report.reported_date + 1);
       //reported_date + 1 so that source ds_follow_up does not resolve itself
