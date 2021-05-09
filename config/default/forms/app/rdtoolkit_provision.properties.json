@@ -1,0 +1,8 @@
+{
+  "icon": "icon-follow-up",
+  "title": "Rapid Diagnostic Toolkit - Provision Test",
+  "context": {
+    "person": true,
+    "place": false
+  }
+}
