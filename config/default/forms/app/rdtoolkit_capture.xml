@@ -88,7 +88,7 @@
         </translation>
       </itext>
       <instance>
-        <rdtoolkit_capture id="rdtoolkit_capture" prefix="J1!rdtoolkit_capture!" delimiter="#" version="2021-05-07 01:20:28">
+        <rdtoolkit_capture id="rdtoolkit_capture" prefix="J1!rdtoolkit_capture!" delimiter="#" version="2021-05-10 01:22:00">
           <patient_uuid tag="hidden"/>
           <_patient_id tag="hidden"/>
           <_patient_name tag="hidden"/>
@@ -103,7 +103,7 @@
             <rdtoolkit_results tag="hidden"/>
             <rdtoolkit_results_description/>
             <rdtoolkit_time_read/>
-            <rdtoolkit_image/>
+            <rdtoolkit_image type="binary"/>
           </data>
           <meta tag="hidden">
             <instanceID/>
@@ -124,7 +124,7 @@
       <bind nodeset="/rdtoolkit_capture/data/rdtoolkit_results" type="string"/>
       <bind nodeset="/rdtoolkit_capture/data/rdtoolkit_results_description" type="string"/>
       <bind nodeset="/rdtoolkit_capture/data/rdtoolkit_time_read" type="string"/>
-      <bind nodeset="/rdtoolkit_capture/data/rdtoolkit_image" type="binary"/>
+      <bind nodeset="/rdtoolkit_capture/data/rdtoolkit_image" type="string"/>
       <bind nodeset="/rdtoolkit_capture/meta/instanceID" type="string" readonly="true()" calculate="concat('uuid:', uuid())"/>
     </model>
   </h:head>
@@ -155,9 +155,9 @@
       <input appearance="hidden" ref="/rdtoolkit_capture/data/rdtoolkit_time_read">
         <label ref="jr:itext('/rdtoolkit_capture/data/rdtoolkit_time_read:label')"/>
       </input>
-      <upload mediatype="image/*" appearance="hidden" ref="/rdtoolkit_capture/data/rdtoolkit_image">
+      <input appearance="hidden" ref="/rdtoolkit_capture/data/rdtoolkit_image">
         <label ref="jr:itext('/rdtoolkit_capture/data/rdtoolkit_image:label')"/>
-      </upload>
+      </input>
     </group>
   </h:body>
 </h:html>
