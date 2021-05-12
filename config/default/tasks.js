@@ -340,11 +340,11 @@ module.exports = [
   },
   // RD Toolkit Integration
   {
-    name: 'rdtoolkit_capture_results',
+    name: 'rdtoolkit-capture-results',
     icon: 'icon-follow-up',
     title: 'task.rdtoolkit.capture.title',
     appliesTo: 'reports',
-    appliesToType: ['rdtoolkit_provision'], // form
+    appliesToType: ['rdtoolkit-provision'], // form
     appliesIf: (contact, report) => {
       return !!(getField(report, 'data.patient_id') && getField(report, 'data.rdtoolkit_session_id'));
     },
@@ -354,10 +354,10 @@ module.exports = [
       }
 
       const captureReport = contact.reports.find(reportDoc => {
-        if (reportDoc.form !== 'rdtoolkit_capture') {
+        if (reportDoc.form !== 'rdtoolkit-capture') {
           return false;
         }
-        return getField(reportDoc, 'data.rdtoolkit_session_id') === getField(report, 'data.rdtoolkit_session_id');
+        return getField(reportDoc, 'rdtoolkit_session_id') === getField(report, 'data.rdtoolkit_session_id');
       });
 
       if (!captureReport || !getField(captureReport, 'data.rdtoolkit_results')) {
@@ -367,23 +367,20 @@ module.exports = [
       const startTime = Math.max(addDays(dueDate, -event.start).getTime(), report.reported_date + 1);
       const endTime = addDays(dueDate, event.end + 1).getTime();
 
-      return isFormArraySubmittedInWindow(contact.reports, ['rdtoolkit_capture'], startTime, endTime);
+      return isFormArraySubmittedInWindow(contact.reports, ['rdtoolkit-capture'], startTime, endTime);
     },
     actions: [
       {
         type: 'report',
-        form: 'rdtoolkit_capture',
+        form: 'rdtoolkit-capture',
         modifyContent: function(content, contact, report) {
-          content.patient_uuid = getField(report, 'patient_uuid');
-          content._patient_name = getField(report, 'data.patient_name');
-          content._patient_id = getField(report, 'data.patient_id');
-          content._rdtoolkit_session_id = getField(report, 'data.rdtoolkit_session_id');
+          content.rdtoolkit_session_id = getField(report, 'data.rdtoolkit_session_id');
         }
       }
     ],
     events: [
       {
-        id: 'rdtoolkit_capture_event',
+        id: 'rdtoolkit-capture-event',
         start: 1,
         end: 2,
         days: 1
