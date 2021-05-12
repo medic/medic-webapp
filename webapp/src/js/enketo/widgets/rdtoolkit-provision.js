@@ -29,7 +29,7 @@
   Rdtoolkitprovisionwidget.prototype._init = function() {
     const $widget = $(this.element);
     const rdToolkitService = window.CHTCore.RDToolkit;
-/*
+
     if (!rdToolkitService.enabled()) {
       window.CHTCore.Translate
         .get('rdtoolkit.disabled')
@@ -37,7 +37,7 @@
         .then(label => $widget.append(`<label>${label}</label>`));
       return;
     }
-*/
+
     displayActions($widget);
 
     $widget.on('click', '.btn.rdtoolkit-provision-test', () => provisionRDTest($widget, rdToolkitService));
