@@ -346,7 +346,7 @@ module.exports = [
     appliesTo: 'reports',
     appliesToType: ['rdtoolkit-provision'], // form
     appliesIf: (contact, report) => {
-      return !!(getField(report, 'data.patient_id') && getField(report, 'data.rdtoolkit_session_id'));
+      return !!(getField(report, 'data.__patient_id') && getField(report, 'data.rdtoolkit_session_id'));
     },
     resolvedIf: (contact, report, event, dueDate) => {
       if (!contact.reports) {

@@ -1,6 +1,6 @@
 {
   "icon": "icon-follow-up",
-  "title": "Rapid Diagnostic Toolkit - Capture Test",
+  "title": "Capture Rapid Diagnostic Test",
   "context": {
     "person": true,
     "place": false
