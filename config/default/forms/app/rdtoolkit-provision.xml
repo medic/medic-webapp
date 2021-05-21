@@ -131,8 +131,8 @@
       <bind nodeset="/rdtoolkit-provision/inputs/contact/name" type="string"/>
       <bind nodeset="/rdtoolkit-provision/inputs/contact/patient_id" type="string"/>
       <bind nodeset="/rdtoolkit-provision/data/__patient_uuid" type="string" calculate="../../inputs/contact/_id"/>
-      <bind nodeset="/rdtoolkit-provision/data/__patient_name" type="string" readonly="true()" calculate="../../inputs/contact/name"/>
-      <bind nodeset="/rdtoolkit-provision/data/__patient_id" type="string" required="true()" calculate="../../inputs/contact/patient_id" readonly="true()"/>
+      <bind nodeset="/rdtoolkit-provision/data/__patient_name" type="string" calculate="../../inputs/contact/name" readonly="true()"/>
+      <bind nodeset="/rdtoolkit-provision/data/__patient_id" type="string" calculate="../../inputs/contact/patient_id" required="true()" readonly="true()"/>
       <bind nodeset="/rdtoolkit-provision/data/rdtoolkit_session_id" type="string" required="true()"/>
       <bind nodeset="/rdtoolkit-provision/data/rdtoolkit_state" type="string"/>
       <bind nodeset="/rdtoolkit-provision/data/rdtoolkit_time_started" type="string"/>
