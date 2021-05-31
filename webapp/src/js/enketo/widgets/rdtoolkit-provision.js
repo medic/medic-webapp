@@ -46,17 +46,18 @@
   function provisionRDTest($widget, rdToolkitService) {
     const dateFormat = 'LLL';
     const form = utils.getForm();
+    const formTagName = form.model.rootElement.tagName;
     // Using form's instance ID as RD Test ID
-    const sessionId = utils.getFieldValue(form, 'rdtoolkit-provision > meta > instanceID').replace('uuid:', '');
-    const patientId = utils.getFieldValue(form, 'rdtoolkit-provision > patient_id');
+    const sessionId = utils.getFieldValue(form, `${formTagName} > meta > instanceID`).replace('uuid:', '');
+    const patientId = utils.getFieldValue(form, `${formTagName} > patient_id`);
 
     if (!sessionId || !patientId) {
       return;
     }
 
-    const patientName = utils.getFieldValue(form, 'rdtoolkit-provision > patient_name');
-    const rdtFilter = utils.getFieldValue(form, 'rdtoolkit-provision > data > rdtoolkit_filter');
-    const monitorApiURL = utils.getFieldValue(form, 'rdtoolkit-provision > data > rdtoolkit_api_url');
+    const patientName = utils.getFieldValue(form, `${formTagName} > patient_name`);
+    const rdtFilter = utils.getFieldValue(form, `${formTagName} > data > rdtoolkit_filter`);
+    const monitorApiURL = utils.getFieldValue(form, `${formTagName} > data > rdtoolkit_api_url`);
 
     rdToolkitService
       .provisionRDTest(sessionId, patientId, patientName, rdtFilter, monitorApiURL)
@@ -66,7 +67,7 @@
         const timeResolved = utils.formatDate(response.timeResolved, dateFormat);
         const state = response.state || '';
 
-        updateFields($widget, sessionId, state, timeStarted, timeResolved);
+        updateFields($widget, formTagName, sessionId, state, timeStarted, timeResolved);
         hideActions($widget);
         displayPreview($widget, state, timeStarted, timeResolved);
       });
@@ -129,12 +130,11 @@
       `);
   }
 
-  function updateFields($widget, sessionId, state, timeStarted, timeResolved) {
-    const root = '/rdtoolkit-provision/data';
-    utils.setFieldValue($widget, `input[name="${root}/rdtoolkit_session_id"]`, sessionId);
-    utils.setFieldValue($widget, `input[name="${root}/rdtoolkit_state"]`, state);
-    utils.setFieldValue($widget, `input[name="${root}/rdtoolkit_time_started"]`, timeStarted);
-    utils.setFieldValue($widget, `input[name="${root}/rdtoolkit_time_resolved"]`, timeResolved);
+  function updateFields($widget, formTagName, sessionId, state, timeStarted, timeResolved) {
+    utils.setFieldValue($widget, `input[name="${formTagName}/data/rdtoolkit_session_id"]`, sessionId);
+    utils.setFieldValue($widget, `input[name="${formTagName}/data/rdtoolkit_state"]`, state);
+    utils.setFieldValue($widget, `input[name="${formTagName}/data/rdtoolkit_time_started"]`, timeStarted);
+    utils.setFieldValue($widget, `input[name="${formTagName}/data/rdtoolkit_time_resolved"]`, timeResolved);
   }
 
   $.fn[ pluginName ] = utils.getBindFunction(pluginName, Rdtoolkitprovisionwidget);
