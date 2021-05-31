@@ -127,23 +127,23 @@
   }
 
   function updateFields($widget, formTagName, capturedTest) {
-    utils.setFieldValue($widget, `input[name="${formTagName}/data/rdtoolkit_time_read"]`, capturedTest.timeRead);
-    utils.setFieldValue($widget, `input[name="${formTagName}/data/rdtoolkit_state"]`, capturedTest.state);
-    utils.setFieldValue($widget, `input[name="${formTagName}/data/rdtoolkit_time_started"]`, capturedTest.timeStarted);
-    utils.setFieldValue($widget, `input[name="${formTagName}/data/rdtoolkit_image"]`, capturedTest.image);
+    utils.setFieldValue($widget, `input[name="/${formTagName}/data/rdtoolkit_time_read"]`, capturedTest.timeRead);
+    utils.setFieldValue($widget, `input[name="/${formTagName}/data/rdtoolkit_state"]`, capturedTest.state);
+    utils.setFieldValue($widget, `input[name="/${formTagName}/data/rdtoolkit_time_started"]`, capturedTest.timeStarted);
+    utils.setFieldValue($widget, `input[name="/${formTagName}/data/rdtoolkit_image"]`, capturedTest.image);
     utils.setFieldValue(
       $widget,
-      `input[name="${formTagName}/data/rdtoolkit_time_resolved"]`,
+      `input[name="/${formTagName}/data/rdtoolkit_time_resolved"]`,
       capturedTest.timeResolved
     );
     utils.setFieldValue(
       $widget,
-      `input[name="${formTagName}/data/rdtoolkit_results"]`,
+      `input[name="/${formTagName}/data/rdtoolkit_results"]`,
       JSON.stringify(capturedTest.results)
     );
     utils.setFieldValue(
       $widget,
-      `input[name="${formTagName}/data/rdtoolkit_results_description"]`,
+      `input[name="/${formTagName}/data/rdtoolkit_results_description"]`,
       capturedTest.resultsDescription
     );
   }

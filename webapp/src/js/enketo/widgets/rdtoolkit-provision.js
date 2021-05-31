@@ -131,10 +131,10 @@
   }
 
   function updateFields($widget, formTagName, sessionId, state, timeStarted, timeResolved) {
-    utils.setFieldValue($widget, `input[name="${formTagName}/data/rdtoolkit_session_id"]`, sessionId);
-    utils.setFieldValue($widget, `input[name="${formTagName}/data/rdtoolkit_state"]`, state);
-    utils.setFieldValue($widget, `input[name="${formTagName}/data/rdtoolkit_time_started"]`, timeStarted);
-    utils.setFieldValue($widget, `input[name="${formTagName}/data/rdtoolkit_time_resolved"]`, timeResolved);
+    utils.setFieldValue($widget, `input[name="/${formTagName}/data/rdtoolkit_session_id"]`, sessionId);
+    utils.setFieldValue($widget, `input[name="/${formTagName}/data/rdtoolkit_state"]`, state);
+    utils.setFieldValue($widget, `input[name="/${formTagName}/data/rdtoolkit_time_started"]`, timeStarted);
+    utils.setFieldValue($widget, `input[name="/${formTagName}/data/rdtoolkit_time_resolved"]`, timeResolved);
   }
 
   $.fn[ pluginName ] = utils.getBindFunction(pluginName, Rdtoolkitprovisionwidget);
