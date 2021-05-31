@@ -74,7 +74,7 @@
 
   function displayActions($widget) {
     window.CHTCore.Translate
-      .get('rdtoolkit.provision')
+      .get('rdtoolkit-provision.title')
       .toPromise()
       .then(label => {
         $widget
@@ -99,31 +99,31 @@
       .find('.rdtoolkit-preview')
       .append(`
         <div>
-          ${window.CHTCore.Translate.instant('report.rdtoolkit-provision.preview.title')}
+          ${window.CHTCore.Translate.instant('rdtoolkit-provision.preview.title')}
         </div>
         <br>
         <div>
           <span class="rdt-label">
-            ${window.CHTCore.Translate.instant('report.rdtoolkit-provision.preview.state')}
+            ${window.CHTCore.Translate.instant('rdtoolkit-provision.preview.state')}
           </span>
           <span class="rdt-value">${window.CHTCore.Translate.instant(state)}</span>
         </div>
         <div>
           <span class="rdt-label">
-            ${window.CHTCore.Translate.instant('report.rdtoolkit-provision.preview.time_started')}
+            ${window.CHTCore.Translate.instant('rdtoolkit-provision.preview.time_started')}
           </span>
           <span class="rdt-value">${timeStarted}</span>
         </div>
         <div>
           <span class="rdt-label">
-            ${window.CHTCore.Translate.instant('report.rdtoolkit-provision.preview.time_resolved')}
+            ${window.CHTCore.Translate.instant('rdtoolkit-provision.preview.time_resolved')}
           </span>
           <span class="rdt-value">${timeResolved}</span>
         </div>
         <br>
         <div>
           <span>
-            ${window.CHTCore.Translate.instant('report.rdtoolkit-provision.preview.next_action')}
+            ${window.CHTCore.Translate.instant('rdtoolkit-provision.preview.next_action')}
           </span>
         </div>
       `);

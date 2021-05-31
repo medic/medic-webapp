@@ -70,7 +70,7 @@
 
   function displayActions($widget) {
     window.CHTCore.Translate
-      .get('rdtoolkit.capture')
+      .get('rdtoolkit-capture.title')
       .toPromise()
       .then(label => {
         $widget
@@ -97,30 +97,30 @@
       .find('.rdtoolkit-preview')
       .append(`
         <div>
-          ${window.CHTCore.Translate.instant('report.rdtoolkit-capture.preview.title')}
+          ${window.CHTCore.Translate.instant('rdtoolkit-capture.preview.title')}
         </div>
         <br>
         <div>
           <span class="rdt-label">
-            ${window.CHTCore.Translate.instant('report.rdtoolkit-capture.preview.results')} 
+            ${window.CHTCore.Translate.instant('rdtoolkit-capture.preview.results')} 
           </span>
           <span class="rdt-value">${capturedTest.resultsDescription}</span>
         </div>
         <div>
           <span class="rdt-label">
-            ${window.CHTCore.Translate.instant('report.rdtoolkit-capture.preview.time_read')} 
+            ${window.CHTCore.Translate.instant('rdtoolkit-capture.preview.time_read')} 
           </span>
           <span class="rdt-value">${capturedTest.timeRead}</span>
         </div>
         <div>
           <span class="rdt-label">
-            ${window.CHTCore.Translate.instant('report.rdtoolkit-capture.preview.image')} 
+            ${window.CHTCore.Translate.instant('rdtoolkit-capture.preview.image')} 
           </span>
           ${capturedTest.image ? imageTag : ''}
         </div>
         <br>
         <div>
-           ${window.CHTCore.Translate.instant('report.rdtoolkit-capture.preview.next_action')} 
+           ${window.CHTCore.Translate.instant('rdtoolkit-capture.preview.next_action')} 
         </div>
       `);
   }
