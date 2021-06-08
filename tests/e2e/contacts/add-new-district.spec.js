@@ -85,14 +85,25 @@ fdescribe('Add new district tests : ', () => {
     expect(await contactPage.peopleRows.count()).toEqual(2);
     const childrenNames = await contactPage.peopleRows.map(row => helper.getTextFromElementNative(row));
     expect(childrenNames).toEqual(['Tudor', 'Ginny']);
-
-    //change contact from other_person to third_person
-    await utils.saveDocs([{
-      _id: 'other_district',
-      contact: { _id: 'third_person' }
-    }]);
+    
+    // change contact 
+    await utils.request({
+      path: '/api/v1/places/other_district',
+      method: 'POST',
+      body: {
+        contact: 'third_person'
+      }
+    });
+    
     await commonElements.goToPeople();
-    expect(contactPage.cardFieldText('contact')).toBe('Ginny');
+    console.log('two...', await utils.getDoc('other_district'));
+    expect(await contactPage.cardFieldText('contact')).toBe('Ginny');
     expect(childrenNames).toEqual(['Ginny', 'Tutor']);
+
+    // Delete contact
+    await utils.deleteDoc('third_person');
+    await commonElements.goToPeople();
+    expect(await contactPage.cardFieldText('contact')).toBe('');
+    expect(childrenNames).toEqual(['Tutor']);
   });
 });
