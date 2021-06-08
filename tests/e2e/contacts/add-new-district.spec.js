@@ -95,14 +95,13 @@ fdescribe('Add new district tests : ', () => {
       }
     });
     
-    await commonElements.goToPeople();
-    console.log('two...', await utils.getDoc('other_district'));
+    await browser.refresh();
     expect(await contactPage.cardFieldText('contact')).toBe('Ginny');
     expect(childrenNames).toEqual(['Ginny', 'Tutor']);
 
     // Delete contact
     await utils.deleteDoc('third_person');
-    await commonElements.goToPeople();
+    await browser.refresh();
     expect(await contactPage.cardFieldText('contact')).toBe('');
     expect(childrenNames).toEqual(['Tutor']);
   });
