@@ -3,7 +3,8 @@ const contactPage = require('../../page-objects/contacts/contacts.po.js');
 const helper = require('../../helper');
 const utils = require('../../utils');
 
-describe('Add new district tests : ', () => {
+// eslint-disable-next-line jasmine/no-focused-tests
+fdescribe('Add new district tests : ', () => {
   afterEach(utils.afterEach);
   afterAll(utils.afterEach);
 
@@ -84,5 +85,14 @@ describe('Add new district tests : ', () => {
     expect(await contactPage.peopleRows.count()).toEqual(2);
     const childrenNames = await contactPage.peopleRows.map(row => helper.getTextFromElementNative(row));
     expect(childrenNames).toEqual(['Tudor', 'Ginny']);
+
+    //change contact from other_person to third_person
+    await utils.saveDocs([{
+      _id: 'other_district',
+      contact: { _id: 'third_person' }
+    }]);
+    await commonElements.goToPeople();
+    expect(contactPage.cardFieldText('contact')).toBe('Ginny');
+    expect(childrenNames).toEqual(['Ginny', 'Tutor']);
   });
 });
