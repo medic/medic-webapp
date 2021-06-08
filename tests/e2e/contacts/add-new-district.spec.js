@@ -85,26 +85,59 @@ fdescribe('Add new district tests : ', () => {
     expect(await contactPage.peopleRows.count()).toEqual(2);
     const childrenNames = await contactPage.peopleRows.map(row => helper.getTextFromElementNative(row));
     expect(childrenNames).toEqual(['Tudor', 'Ginny']);
-    
+  });
+
+  it('should change and delete district contact', async () => {
+    const contacts = [
+      {
+        _id: 'three_district',
+        type: 'district_hospital',
+        name: 'Maria\'s district',
+        contact: { _id: 'one_person' },
+        reported_at: new Date().getTime(),
+      },
+      {
+        _id: 'three_person',
+        type: 'person',
+        name: 'Maria',
+        parent: { _id: 'three_district' },
+        reported_at: new Date().getTime(),
+      },
+
+      {
+        _id: 'four_person',
+        type: 'person',
+        name: 'Marta',
+        parent: { _id: 'three_district' },
+        reported_at: new Date().getTime(),
+      },
+    ];
+
+    await utils.saveDocs(contacts);
+
+    await commonElements.goToPeople();
+    await contactPage.selectLHSRowByText('Maria\'s district');
+    await helper.waitUntilReadyNative(contactPage.center());
+    expect(await contactPage.center().getText()).toBe('Maria\'s district');
     // change contact 
     await utils.request({
-      path: '/api/v1/places/other_district',
+      path: '/api/v1/places/three_district',
       method: 'POST',
       body: {
-        contact: 'third_person'
+        contact: 'four_person'
       }
     });
     
     await browser.refresh();
     await helper.waitUntilReadyNative(contactPage.center());
-    expect(await contactPage.cardFieldText('contact')).toBe('Ginny');
-    expect(childrenNames).toEqual(['Ginny', 'Tudor']);
+    expect(await contactPage.cardFieldText('contact')).toBe('Marta');
 
     // Delete contact
     await utils.deleteDoc('third_person');
     await browser.refresh();
     await helper.waitUntilReadyNative(contactPage.center());
     expect(await contactPage.cardFieldText('contact')).toBe('');
-    expect(childrenNames).toEqual(['Tudor']);
+    const childrenNames = await contactPage.peopleRows.map(row => helper.getTextFromElementNative(row));
+    expect(childrenNames).toEqual(['Maria']);
   });
 });
