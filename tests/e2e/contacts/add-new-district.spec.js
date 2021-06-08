@@ -96,13 +96,15 @@ fdescribe('Add new district tests : ', () => {
     });
     
     await browser.refresh();
+    await helper.waitUntilReadyNative(contactPage.center());
     expect(await contactPage.cardFieldText('contact')).toBe('Ginny');
-    expect(childrenNames).toEqual(['Ginny', 'Tutor']);
+    expect(childrenNames).toEqual(['Ginny', 'Tudor']);
 
     // Delete contact
     await utils.deleteDoc('third_person');
     await browser.refresh();
+    await helper.waitUntilReadyNative(contactPage.center());
     expect(await contactPage.cardFieldText('contact')).toBe('');
-    expect(childrenNames).toEqual(['Tutor']);
+    expect(childrenNames).toEqual(['Tudor']);
   });
 });
