@@ -1,6 +1,7 @@
 const utils = require('../../../utils');
 const commonElements = require('../../../page-objects/common/common.po.js');
 const contactPage = require('../../../page-objects/contacts/contacts.po.js');
+const helper = require('../../../helper.js');
 const uuid = require('uuid');
 const districtId = uuid.v4();
 const districtName = uuid.v4();
@@ -57,5 +58,51 @@ describe('Editing contacts with the CHT config', () => {
     await commonElements.confirmDelete();
     await contactPage.selectLHSRowByText(healtchCenterName);
     expect(await contactPage.peopleRows.count()).toBe(0);
+  });
+
+  it('should change primary contact', async () => {
+    const contacts = [
+      {
+        _id: 'three_district',
+        type: 'district_hospital',
+        name: 'Maria\'s district',
+        contact: { _id: 'one_person' },
+        reported_at: new Date().getTime(),
+      },
+      {
+        _id: 'three_person',
+        type: 'person',
+        name: 'Maria',
+        parent: { _id: 'three_district' },
+        reported_at: new Date().getTime(),
+      },
+
+      {
+        _id: 'four_person',
+        type: 'person',
+        name: 'Marta',
+        parent: { _id: 'three_district' },
+        reported_at: new Date().getTime(),
+      },
+    ];
+
+    await utils.saveDocs(contacts);
+
+    await commonElements.goToPeople();
+    await contactPage.selectLHSRowByText('Maria\'s district');
+    await helper.waitUntilReadyNative(contactPage.center());
+    expect(await contactPage.center().getText()).toBe('Maria\'s district');
+    // change contact
+    await utils.request({
+      path: '/api/v1/places/three_district',
+      method: 'POST',
+      body: {
+        contact: 'four_person'
+      }
+    });
+
+    await browser.refresh();
+    await helper.waitUntilReadyNative(contactPage.center());
+    expect(await contactPage.cardFieldText('contact')).toBe('Marta');
   });
 });
