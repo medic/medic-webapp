@@ -3,8 +3,7 @@ const contactPage = require('../../page-objects/contacts/contacts.po.js');
 const helper = require('../../helper');
 const utils = require('../../utils');
 
-// eslint-disable-next-line jasmine/no-focused-tests
-fdescribe('Add new district tests : ', () => {
+describe('Add new district tests : ', () => {
   afterEach(utils.afterEach);
   afterAll(utils.afterEach);
 
