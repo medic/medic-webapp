@@ -1,7 +1,6 @@
 const utils = require('../../../utils');
 const commonElements = require('../../../page-objects/common/common.po.js');
 const contactPage = require('../../../page-objects/contacts/contacts.po.js');
-const helper = require('../../../helper.js');
 const uuid = require('uuid');
 const districtId = uuid.v4();
 const districtName = uuid.v4();
@@ -9,6 +8,9 @@ const healthCenterId = uuid.v4();
 const healtchCenterName = uuid.v4();
 const personName = uuid.v4();
 const personId = uuid.v4();
+const personFactory = require('../../../factories/cht/contacts/person');
+const place = require('../../../factories/cht/contacts/place');
+
 
 describe('Editing contacts with the CHT config', () => {
   beforeAll(() => utils.saveDocs(expectedDocs));
@@ -61,48 +63,37 @@ describe('Editing contacts with the CHT config', () => {
   });
 
   it('should change primary contact', async () => {
-    const contacts = [
+    const district = place.generateHierarchy(['district_hospital'])[0];
+    const originalContact = personFactory.build(
       {
-        _id: 'three_district',
-        type: 'district_hospital',
-        name: 'Maria\'s district',
-        contact: { _id: 'one_person' },
-        reported_at: new Date().getTime(),
-      },
+        parent: {
+          _id: district._id,
+          parent: district.parent
+        }
+      });
+    
+    const secondContact = personFactory.build(
       {
-        _id: 'three_person',
-        type: 'person',
-        name: 'Maria',
-        parent: { _id: 'three_district' },
-        reported_at: new Date().getTime(),
-      },
+        parent: {
+          _id: district._id,
+          parent: district.parent
+        }
+      });
+    district.contact = originalContact;
+    await utils.saveDocs([district, originalContact, secondContact]);
+    await browser.refresh();
 
-      {
-        _id: 'four_person',
-        type: 'person',
-        name: 'Marta',
-        parent: { _id: 'three_district' },
-        reported_at: new Date().getTime(),
-      },
-    ];
-
-    await utils.saveDocs(contacts);
-
-    await commonElements.goToPeople();
-    await contactPage.selectLHSRowByText('Maria\'s district');
-    await helper.waitUntilReadyNative(contactPage.center());
-    expect(await contactPage.center().getText()).toBe('Maria\'s district');
-    // change contact
+    //change contact
     await utils.request({
-      path: '/api/v1/places/three_district',
+      path: `/api/v1/places/${district._id}`,
       method: 'POST',
       body: {
-        contact: 'four_person'
+        contact: secondContact._id
       }
     });
 
     await browser.refresh();
-    await helper.waitUntilReadyNative(contactPage.center());
-    expect(await contactPage.cardFieldText('contact')).toBe('Marta');
+    const newDistrict = await utils.getDoc(district._id);
+    expect(newDistrict.contact._id).toBe(secondContact._id);
   });
 });
