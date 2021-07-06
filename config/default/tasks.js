@@ -344,9 +344,9 @@ module.exports = [
     icon: 'icon-follow-up',
     title: 'task.rdtoolkit.capture.title',
     appliesTo: 'reports',
-    appliesToType: ['rdtoolkit-provision'], // form
+    appliesToType: ['rdtoolkit-provision'],
     appliesIf: (contact, report) => {
-      return !!(getField(report, 'data.__patient_id') && getField(report, 'data.rdtoolkit_session_id'));
+      return !!getField(report, 'data.__patient_id');
     },
     resolvedIf: (contact, report, event, dueDate) => {
       if (!contact.reports) {
@@ -357,9 +357,12 @@ module.exports = [
         if (reportDoc.form !== 'rdtoolkit-capture') {
           return false;
         }
-        return getField(reportDoc, 'rdtoolkit_session_id') === getField(report, 'data.rdtoolkit_session_id');
+        const rdToolkitSessionId = getField(report, 'meta.instanceID').replace('uuid:', '');
+        console.warn('resolvedIf ====', rdToolkitSessionId, getField(reportDoc, 'rdtoolkit_session_id'));
+        console.warn('resolvedIf',report, reportDoc);
+        return getField(reportDoc, 'rdtoolkit_session_id') === rdToolkitSessionId;
       });
-
+      console.warn('captureReport', captureReport, getField(captureReport, 'data.rdtoolkit_results'));
       if (!captureReport || !getField(captureReport, 'data.rdtoolkit_results')) {
         return false;
       }
@@ -374,7 +377,8 @@ module.exports = [
         type: 'report',
         form: 'rdtoolkit-capture',
         modifyContent: function(content, contact, report) {
-          content.rdtoolkit_session_id = getField(report, 'data.rdtoolkit_session_id');
+          const rdToolkitSessionId = getField(report, 'meta.instanceID').replace('uuid:', '');
+          content.rdtoolkit_session_id = rdToolkitSessionId;
         }
       }
     ],

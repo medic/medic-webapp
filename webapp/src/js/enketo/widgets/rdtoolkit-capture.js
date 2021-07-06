@@ -44,9 +44,7 @@
 
   function captureRDTestResult($widget, rdToolkitService) {
     const dateFormat = 'LLL';
-    const form = utils.getForm();
-    const formTagName = form.model.rootElement.tagName;
-    const sessionId = utils.getFieldValue(form, `${formTagName} > rdtoolkit_session_id`);
+    const sessionId = utils.getFieldValue($widget, '.or-appearance-rdtoolkit-session-id input');
 
     rdToolkitService
       .captureRDTest(sessionId)
@@ -62,7 +60,7 @@
           image: response.croppedImage
         };
 
-        updateFields($widget, formTagName, capturedTest);
+        updateFields($widget, capturedTest);
         hideActions($widget);
         displayPreview($widget, capturedTest);
       });
@@ -123,24 +121,20 @@
       `);
   }
 
-  function updateFields($widget, formTagName, capturedTest) {
-    utils.setFieldValue($widget, `input[name="/${formTagName}/data/rdtoolkit_time_read"]`, capturedTest.timeRead);
-    utils.setFieldValue($widget, `input[name="/${formTagName}/data/rdtoolkit_state"]`, capturedTest.state);
-    utils.setFieldValue($widget, `input[name="/${formTagName}/data/rdtoolkit_time_started"]`, capturedTest.timeStarted);
-    utils.setFieldValue($widget, `input[name="/${formTagName}/data/rdtoolkit_image"]`, capturedTest.image);
+  function updateFields($widget, capturedTest) {
+    utils.setFieldValue($widget, '.or-appearance-rdtoolkit-time-read input', capturedTest.timeRead);
+    utils.setFieldValue($widget, '.or-appearance-rdtoolkit-state input', capturedTest.state);
+    utils.setFieldValue($widget, '.or-appearance-rdtoolkit-time-started input', capturedTest.timeStarted);
+    utils.setFieldValue($widget, '.or-appearance-rdtoolkit-image input', capturedTest.image);
+    utils.setFieldValue($widget, '.or-appearance-rdtoolkit-time-resolved input', capturedTest.timeResolved);
     utils.setFieldValue(
       $widget,
-      `input[name="/${formTagName}/data/rdtoolkit_time_resolved"]`,
-      capturedTest.timeResolved
-    );
-    utils.setFieldValue(
-      $widget,
-      `input[name="/${formTagName}/data/rdtoolkit_results"]`,
+      '.or-appearance-rdtoolkit-results input',
       JSON.stringify(capturedTest.results)
     );
     utils.setFieldValue(
       $widget,
-      `input[name="/${formTagName}/data/rdtoolkit_results_description"]`,
+      '.or-appearance-rdtoolkit-results-description input',
       capturedTest.resultsDescription
     );
   }

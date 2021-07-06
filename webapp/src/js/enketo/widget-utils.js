@@ -39,7 +39,7 @@ const getForm = () => {
  * @param value { any }
  */
 const setFieldValue = ($widget, fieldSelector, value) => {
-  if (!fieldSelector || value === undefined) {
+  if (!$widget || !fieldSelector || value === undefined) {
     return;
   }
 
@@ -50,29 +50,19 @@ const setFieldValue = ($widget, fieldSelector, value) => {
 };
 
 /**
- * Get the value of a field matching the selector for the Enketo form (XML like).
- * Example:
- *
- * <instance>
- *   <data>
- *     <myField></myField>
- *   </data>
- * </instance>
- *
- * fieldSelector is: "instance > data > myField"
- *
- * @param form { Object } Enketo form object reference.
- * @param fieldSelector { string } Selector to match field in the XML.
+ * Get the value to a field matching the selector provided.
+ * @param $element { Object } Jquery object reference of element in DOM, like a widget or a form.
+ * @param fieldSelector { string } Selector to match field in the HTML.
  * @returns {*}
  */
-const getFieldValue = (form, fieldSelector) => {
-  if (!form || !fieldSelector) {
+const getFieldValue = ($element, fieldSelector) => {
+  if (!$element || !fieldSelector) {
     return;
   }
 
-  return form.model.$
+  return $element
     .find(fieldSelector)
-    .text();
+    .val();
 };
 
 /**
