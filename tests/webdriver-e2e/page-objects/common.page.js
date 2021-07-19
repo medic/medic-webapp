@@ -2,6 +2,7 @@ const hamburgerMenu = () => $('#header-dropdown-link');
 const logoutButton =  () => $('.fa-power-off');
 const modalBody = () => $('div.modal-body');
 const yesButton = () => $('a.btn.submit.btn-danger');
+const tabLink = (name) => $(`a#${name}-tab`);
 
 const navigateToLogoutModal = async () => {
   await (await hamburgerMenu()).click();
@@ -19,7 +20,12 @@ const getLogoutMessage = async () => {
   return (await modalBody()).getText();
 };
 
+const navigateToTab = async (name) => {
+  await (await tabLink(name)).click();
+};
+
 module.exports = {
   logout,
-  getLogoutMessage
+  getLogoutMessage,
+  navigateToTab
 };

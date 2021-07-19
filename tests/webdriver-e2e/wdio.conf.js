@@ -61,7 +61,7 @@ const baseConfig = {
     // maxInstances can get overwritten per capability. So if you have an in-house Selenium
     // grid with only 5 firefox instances available you can make sure that not more than
     // 5 instances get started at a time.
-    maxInstances: 5,
+    maxInstances: 1,
     //
     browserName: 'chrome',
     acceptInsecureCerts: true,
@@ -276,9 +276,9 @@ const baseConfig = {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {Array.<String>} specs List of spec file paths that ran
    */
-  afterSession: function () {
-    utils.tearDownServices();
-  },
+  // afterSession: function () {
+  //   utils.tearDownServices();
+  // },
   /**
    * Gets executed after all workers got shut down and the process is about to exit. An error
    * thrown in the onComplete hook will result in the test run failing.
@@ -288,6 +288,7 @@ const baseConfig = {
    * @param {<Object>} results object containing test results
    */
   onComplete: function () {
+    utils.tearDownServices();
     const reportError = new Error('Could not generate Allure report');
     const timeoutError = new Error('Timeout generating report');
     const generation = allure(['generate', 'allure-results', '--clean']);
